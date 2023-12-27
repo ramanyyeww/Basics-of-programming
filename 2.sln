@@ -1,31 +1,42 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34202.233
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2", "2\2.vcxproj", "{8A118355-AD16-40D0-8119-3A68A3010F70}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Debug|x64.ActiveCfg = Debug|x64
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Debug|x64.Build.0 = Debug|x64
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Debug|x86.ActiveCfg = Debug|Win32
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Debug|x86.Build.0 = Debug|Win32
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Release|x64.ActiveCfg = Release|x64
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Release|x64.Build.0 = Release|x64
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Release|x86.ActiveCfg = Release|Win32
-		{8A118355-AD16-40D0-8119-3A68A3010F70}.Release|x86.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F8F14ED9-A00C-4B83-AE89-5AAB8E6F750A}
-	EndGlobalSection
-EndGlobal
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
+using namespace std;
+
+bool containsNearbyAlmostDuplicate(vector<int>& nums, int indexDiff, int valueDiff) {
+    if (nums.size() <= 1) {
+        return false;
+    }
+
+    for (int i = 0; i < nums.size(); ++i) {
+        for (int j = i + 1; j < min(static_cast<int>(nums.size()), i + indexDiff + 1); ++j) {
+            if (abs(nums[i] - nums[j]) <= valueDiff) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    string choice;
+    do {
+        vector<int> nums1 = { 1,2,3,1 };
+        int indexDiff1 = 3;
+        int valueDiff1 = 0;
+
+        vector<int> nums2 = { 1,5,9,1,5,9 };
+        int indexDiff2 = 2;
+        int valueDiff2 = 3;
+
+        cout << boolalpha << containsNearbyAlmostDuplicate(nums1, indexDiff1, valueDiff1) << endl; // true
+        cout << boolalpha << containsNearbyAlmostDuplicate(nums2, indexDiff2, valueDiff2) << endl; // false
+
+        cout << "Run again? (y/n): ";
+        cin >> choice;
+    } while (choice == "y" || choice == "Y");
+    return 0;
+
+}

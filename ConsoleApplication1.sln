@@ -1,31 +1,73 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34202.233
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.vcxproj", "{1D6B2C94-1B39-41C5-A37D-57402877C926}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Debug|x64.ActiveCfg = Debug|x64
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Debug|x64.Build.0 = Debug|x64
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Debug|x86.ActiveCfg = Debug|Win32
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Debug|x86.Build.0 = Debug|Win32
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Release|x64.ActiveCfg = Release|x64
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Release|x64.Build.0 = Release|x64
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Release|x86.ActiveCfg = Release|Win32
-		{1D6B2C94-1B39-41C5-A37D-57402877C926}.Release|x86.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AA08291A-FBAE-481D-901F-7B3A909B6C31}
-	EndGlobalSection
-EndGlobal
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+        int maxSum = INT_MIN;
+        calculateMaxSum(root, maxSum);
+        return maxSum;
+    }
+
+    int calculateMaxSum(TreeNode* node, int& maxSum) {
+        if (node == nullptr) {
+            return 0;
+        }
+
+        int leftMax = max(0, calculateMaxSum(node->left, maxSum));
+        int rightMax = max(0, calculateMaxSum(node->right, maxSum));
+
+        int currentMax = node->val + leftMax + rightMax;
+        maxSum = max(maxSum, currentMax);
+
+        return node->val + max(leftMax, rightMax);
+    }
+};
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    string choice;
+    static int storedResult = 0; // статическая переменная для сохранения результата
+
+    do {
+        // Создаём дерево из примера [-10,9,20,null,null,15,7]
+        TreeNode* root = new TreeNode(-10);
+        root->left = new TreeNode(9);
+        root->right = new TreeNode(20);
+        root->right->left = new TreeNode(15);
+        root->right->right = new TreeNode(7);
+
+        // Используем статическую переменную, если она уже была заполнена ранее
+        int result;
+        if (storedResult != 0) {
+            result = storedResult;
+        }
+        else {
+            Solution solution;
+            result = solution.maxPathSum(root);
+            storedResult = result; // сохраняем результат в статической переменной
+        }
+        cout << "Результат: " << result << endl;
+
+        // Очищаем память, выделенную под дерево
+        delete root->right->right;
+        delete root->right->left;
+        delete root->right;
+        delete root->left;
+        delete root;
+
+        cout << "Запустить снова? (y/n): ";
+        cin >> choice;
+    } while (choice == "Y" || choice == "y");
+    return 0;
+}
+
